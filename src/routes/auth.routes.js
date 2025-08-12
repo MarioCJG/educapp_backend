@@ -84,4 +84,30 @@ r.post('/first-login/done', async (req, res) => {
   }
 });
 
+r.get('/perfil', async (req, res) => {
+  try {
+    const auth = req.headers.authorization?.split(' ')[1];
+    if (!auth) return res.status(401).json({ error: 'Sin token' });
+    const decoded = jwt.verify(auth, config.jwtSecret);
+
+    if (decoded.role !== 'estudiante') {
+      return res.status(403).json({ error: 'No autorizado' });
+    }
+
+    const [rows] = await pool.query(
+      `SELECT e.id AS estudiante_id, e.nombre, e.curso_id, c.nivel, c.letra
+       FROM edu_estudiante e
+       JOIN edu_curso c ON c.id = e.curso_id
+       WHERE e.strapi_user_id = ?`,
+      [decoded.sub]
+    );
+
+    if (!rows.length) return res.status(404).json({ error: 'No encontrado' });
+    res.json(rows[0]);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Error servidor' });
+  }
+});
+
 export default r;

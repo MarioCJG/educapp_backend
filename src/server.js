@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.routes.js';
 import catalogoRoutes from './routes/catalogo.routes.js';
 import actividadesRoutes from './routes/actividades.routes.js';
 import intentosRoutes from './routes/intentos.routes.js';
+import rankingRoutes from './routes/ranking.routes.js';
 
 const app = express();
 app.use(cors());
@@ -17,6 +18,7 @@ app.use('/auth', authRoutes);
 app.use('/catalogo', catalogoRoutes);
 app.use('/actividades', actividadesRoutes);
 app.use('/intentos', intentosRoutes);
+app.use('/ranking', rankingRoutes);
 
 app.listen(config.port, () => {
   console.log(`API escuchando en http://localhost:${config.port}`);
